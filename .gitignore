@@ -58,8 +58,14 @@ docs/_build/
 # PyBuilder
 target/
 
-#Ipython Notebook
+# Ipython Notebook
 .ipynb_checkpoints
 
-#virtual environment
+# virtual environment
 venv/
+
+# test db files
+db.sqlite3
+
+# IDE files
+.idea/
