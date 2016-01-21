@@ -1,0 +1,18 @@
+---
+- hosts: linux
+  remote_user: saflores
+  tasks:
+    - name: Checking that sshd is actually running
+      # The action argument always starts with a module. A module is a part of ansible that executes your task.
+      # the module here is 'service'
+      # An action defines a module execution with the necessary parameters.
+      # the params here are 'name' and 'state
+      action: service name=sshd state=started
+
+    - name: Getting available memory in each host
+      # {{ variables_are_used_like_this }}
+      action: debug msg="memfree_mb = {{ ansible_memory_mb.real.free }}"
+
+    - name: Getting file system usage
+
+      action: debug msg="root_partition_usage = {{ 100*(ansible_mounts[0].size_total - ansible_mounts[0].size_available)/ansible_mounts[0].size_total }}"
