@@ -1,0 +1,1 @@
+alias ansible='ansible -i inventory.txt -u saflores'
