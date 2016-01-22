@@ -1,0 +1,10 @@
+{% if host_l %}
+    <p>click on each host for details</p>
+    <ul>
+    {% for h in host_l %}
+        <li><a href="/charts/{{ h.id }}/">{{ h.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hosts are available.</p>
+{% endif %}
