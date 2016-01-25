@@ -1,18 +1,21 @@
 from __future__ import print_function
 from ansible.plugins.callback import CallbackBase
+from django.utils import timezone
 
 # add our top level src file to the sys.path
 # so that we can import stuff from this ansible plugin
-import sys
+import sys, os
 import inspect
 from os.path import dirname, join, realpath
 src_dir = join(dirname(realpath(inspect.getfile(inspect.currentframe()))), '../')
 sys.path.append(src_dir)
-# now we can import our django stuff:
-from django.conf import settings
-settings.configure()
 
+# inform django where our db settings are:
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "monitoring.settings")
+
+# now we can import our django stuff:
 from charts.models import Host, MemUsageSample
+
 
 class CallbackModule(CallbackBase):
 
@@ -31,11 +34,20 @@ class CallbackModule(CallbackBase):
                 data_s = invocation.get('module_args').get('msg')
 
                 # TODO: find a better way to do this
-                param, value = data_s.split(' = ')
+                ansible_param, ansible_value = data_s.split(' = ')
 
-                if param == 'memfree_mb':
-                    print('will write in the database')
-                    print('parm:', param)
-                    print('value:', value)
+                if ansible_param == 'memfree_mb':
+                    print('will write in the datbase table ', ansible_param)
+                    print('host:', host)
+                    print('value:', ansible_value)
+                    h = Host.objects.filter(name__startswith=host)[0]
+
+                    mem_sample = MemUsageSample()
+                    mem_sample.host = h
+                    mem_sample.num_mb = ansible_value
+                    mem_sample.datetime = timezone.now()
+
+                    mem_sample.save()
+
                 else:
                     print ('disk usage not implemented yet')

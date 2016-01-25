@@ -14,7 +14,7 @@ def index(request):
 def host(request, host_id):
     sample_l = MemUsageSample.objects.filter(host_id=host_id)
 
-    mem_chart = pygal.Line(x_label_rotation=30)
+    mem_chart = pygal.Line(x_label_rotation=30, range=(10000, 32000))
     time_labels = []
     mem_values = []
     for s in sample_l:
