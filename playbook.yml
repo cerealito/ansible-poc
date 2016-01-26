@@ -11,7 +11,9 @@
 
     - name: Getting available memory in each host
       # {{ variables_are_used_like_this }}
-      action: debug msg="memfree_mb = {{ ansible_memory_mb.real.free }}"
+      # for modules that return facts there is no need to register variables since those
+      # variables are created by ansible automatically...
+      action: debug var=ansible_memory_mb.real
 
     - name: Getting file system usage
 

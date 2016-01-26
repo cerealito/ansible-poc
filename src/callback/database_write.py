@@ -24,30 +24,27 @@ class CallbackModule(CallbackBase):
 
         logged_modules = ['debug']
         if type(result) == dict:
-            invocation = result.pop('invocation')
+            invocation = result.get('invocation')
             if invocation.get('module_name') not in logged_modules:
                 return
             else:
-                if invocation.get('module_args') == {}:
-                    return
-
-                data_s = invocation.get('module_args').get('msg')
-
-                # TODO: find a better way to do this
-                ansible_param, ansible_value = data_s.split(' = ')
-
-                if ansible_param == 'memfree_mb':
-                    print('will write in the datbase table ', ansible_param)
+                var_name = invocation.get('module_args').get('var')
+                if var_name == 'ansible_memory_mb.real':
+                    real_mem = result.get(var_name)
+                    print('will write in the datbase table ', var_name)
                     print('host:', host)
-                    print('value:', ansible_value)
-                    h = Host.objects.filter(name__startswith=host)[0]
+                    print('value:', real_mem)
+
+                    h = Host.objects.get(name__exact=host)
 
                     mem_sample = MemUsageSample()
                     mem_sample.host = h
-                    mem_sample.num_mb = ansible_value
+                    mem_sample.num_mb = int(real_mem.get('free'))
                     mem_sample.datetime = timezone.now()
 
                     mem_sample.save()
-
+                elif invocation.get('module_args').get('var') == 'slash_usage':
+                    # disk usage
+                    pass
                 else:
-                    print ('disk usage not implemented yet')
+                    pass
