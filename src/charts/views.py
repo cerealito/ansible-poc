@@ -20,13 +20,16 @@ def host(request, host_id):
 
     sample_l = MemUsageSample.objects.filter(host_id=host_id)
 
-    mem_chart = pygal.Line(title=current_host.name, x_label_rotation=30, range=(10000, 32000))
+    mem_chart = pygal.Line(title='Percentage of free memory in ' + current_host.name,
+                           x_label_rotation=30,
+                           range=(0, 100),
+                           show_legend=False)
     time_labels = []
     mem_values = []
     for s in sample_l:
         assert isinstance(s, MemUsageSample)
         time_labels.append(s.datetime)
-        mem_values.append(s.num_mb)
+        mem_values.append(s.percent)
 
     mem_chart.x_labels = time_labels
     mem_chart.add('Free memory', mem_values)

@@ -30,17 +30,21 @@ class CallbackModule(CallbackBase):
             else:
                 var_name = invocation.get('module_args').get('var')
                 if var_name == 'ansible_memory_mb.real':
-                    real_mem = result.get(var_name)
+                    real_mem_d = result.get(var_name)
                     print('will write in the datbase table ', var_name)
                     print('host:', host)
-                    print('value:', real_mem)
+
+
+                    m_f = int(real_mem_d.get('free'))
+                    m_t = int(real_mem_d.get('total'))
+                    m_u = int(real_mem_d.get('used'))
 
                     h = Host.objects.get(name__exact=host)
 
                     mem_sample = MemUsageSample()
                     mem_sample.host = h
-                    mem_sample.num_mb = int(real_mem.get('free'))
                     mem_sample.datetime = timezone.now()
+                    mem_sample.percent = 100*float(m_u)/float(m_t)
 
                     mem_sample.save()
                 elif invocation.get('module_args').get('var') == 'slash_usage':

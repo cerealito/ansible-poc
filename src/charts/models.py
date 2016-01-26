@@ -11,7 +11,7 @@ class Host(models.Model):
 class FSUsageSample(models.Model):
     host = models.ForeignKey(Host)
     datetime = models.DateTimeField('Date and time')
-    percent = models.FloatField()
+    percent = models.FloatField('Usage of the root partition (percent)')
 
     def __unicode__(self):
         return self.host.name + '  ' + unicode(str(self.datetime) + '  ' + str(self.percent))
@@ -20,7 +20,7 @@ class FSUsageSample(models.Model):
 class MemUsageSample(models.Model):
     host = models.ForeignKey(Host)
     datetime = models.DateTimeField('Date and time')
-    num_mb = models.IntegerField('Megabytes of physical memory available')
+    percent = models.IntegerField('Percentage of used memory')
 
     def __unicode__(self):
-        return self.host.name + '  ' + unicode(str(self.datetime) + '  ' + str(self.num_mb))
+        return self.host.name + '  ' + unicode(str(self.datetime) + '  ' + str(self.percent))
