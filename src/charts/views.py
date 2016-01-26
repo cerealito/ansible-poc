@@ -1,5 +1,6 @@
 import pygal
 from charts.models import Host, MemUsageSample
+from django.http import Http404
 from django.shortcuts import render
 
 
@@ -12,9 +13,14 @@ def index(request):
 
 
 def host(request, host_id):
+    if not Host.objects.filter(pk=host_id).count():
+        raise Http404
+
+    current_host = Host.objects.filter(pk=host_id)[0]
+
     sample_l = MemUsageSample.objects.filter(host_id=host_id)
 
-    mem_chart = pygal.Line(x_label_rotation=30, range=(10000, 32000))
+    mem_chart = pygal.Line(title=current_host.name, x_label_rotation=30, range=(10000, 32000))
     time_labels = []
     mem_values = []
     for s in sample_l:
