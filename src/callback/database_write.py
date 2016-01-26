@@ -14,7 +14,7 @@ sys.path.append(src_dir)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "monitoring.settings")
 
 # now we can import our django stuff:
-from charts.models import Host, MemUsageSample
+from charts.models import Host, MemUsageSample, FSUsageSample
 
 
 class CallbackModule(CallbackBase):
@@ -29,26 +29,45 @@ class CallbackModule(CallbackBase):
                 return
             else:
                 var_name = invocation.get('module_args').get('var')
+
                 if var_name == 'ansible_memory_mb.real':
+                    #######################################################################
+                    # process memory information
                     real_mem_d = result.get(var_name)
                     print('will write in the datbase table ', var_name)
                     print('host:', host)
 
-
-                    m_f = int(real_mem_d.get('free'))
-                    m_t = int(real_mem_d.get('total'))
-                    m_u = int(real_mem_d.get('used'))
+                    mem_t = int(real_mem_d.get('total'))
+                    mem_u = int(real_mem_d.get('used'))
 
                     h = Host.objects.get(name__exact=host)
 
                     mem_sample = MemUsageSample()
                     mem_sample.host = h
                     mem_sample.datetime = timezone.now()
-                    mem_sample.percent = 100*float(m_u)/float(m_t)
-
+                    mem_sample.percent = 100*float(mem_u)/float(mem_t)
                     mem_sample.save()
-                elif invocation.get('module_args').get('var') == 'slash_usage':
-                    # disk usage
-                    pass
+
+                elif var_name == 'ansible_mounts':
+                    #######################################################################
+                    # process disk usage information
+                    mount_l = result.get(var_name)
+                    for m in mount_l:
+                        partition_name = m.get('mount')
+                        if partition_name == '/':
+                            # last m is the partition that we need
+                            break
+                    disk_t = m.get('size_total')
+                    disk_a = m.get('size_available')
+                    disk_u = disk_t - disk_a
+
+                    h = Host.objects.get(name__exact=host)
+
+                    disk_sample = FSUsageSample()
+                    disk_sample.host = h
+                    disk_sample.datetime = timezone.now()
+                    disk_sample.percent = 100*float(disk_u)/float(disk_t)
+                    disk_sample.save()
+
                 else:
                     pass

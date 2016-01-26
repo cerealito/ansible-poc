@@ -17,4 +17,4 @@
 
     - name: Getting file system usage
 
-      action: debug msg="slash_usage = {{ 100*(ansible_mounts[0].size_total - ansible_mounts[0].size_available)/ansible_mounts[0].size_total }}"
+      action: debug var=ansible_mounts
