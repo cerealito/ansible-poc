@@ -41,8 +41,8 @@ class CallbackModule(CallbackBase):
                     print('will write in the datbase table ', var_name)
                     print('host:', host)
 
-                    mem_t = int(real_mem_d.get('total'))
-                    mem_u = int(real_mem_d.get('used'))
+                    mem_t = real_mem_d.get('total')
+                    mem_u = real_mem_d.get('used')
 
                     mem_sample = MemUsageSample()
                     mem_sample.host = h

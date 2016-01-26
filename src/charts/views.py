@@ -18,8 +18,9 @@ def host(request, host_id):
 
     current_host = Host.objects.filter(pk=host_id)[0]
 
-    mem_sample_l = MemUsageSample.objects.filter(host_id=host_id)
-    fsu_sample_l = FSUsageSample.objects.filter(host_id=host_id)
+    # get the last 10 samples, with the most recent at the end
+    mem_sample_l = reversed(MemUsageSample.objects.filter(host_id=host_id).order_by('-id')[:10])
+    fsu_sample_l = reversed(FSUsageSample.objects.filter(host_id=host_id).order_by('-id')[:10])
 
     mem_chart = pygal.Line(title='Hardware resources in ' + current_host.name,
                            x_label_rotation=30,
@@ -39,7 +40,7 @@ def host(request, host_id):
     fs_values = []
     for s in fsu_sample_l:
         assert isinstance(s, FSUsageSample)
-        fs_times.append(s.datetime)
+        fs_times.append(s.datetime.__format__('%Y-%m-%d %H:%M:%S'))
         fs_values.append(s.percent)
 
     mem_chart.x_labels = fs_times
