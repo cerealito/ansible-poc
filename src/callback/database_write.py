@@ -28,11 +28,15 @@ class CallbackModule(CallbackBase):
             if invocation.get('module_name') not in logged_modules:
                 return
             else:
-                var_name = invocation.get('module_args').get('var')
+                # information sent from ansible is suitable for our db
+                # start by getting the host and the current time
+                h = Host.objects.get(name__exact=host)
+                dt = timezone.now()
 
+                var_name = invocation.get('module_args').get('var')
+                #######################################################################
+                # process memory information
                 if var_name == 'ansible_memory_mb.real':
-                    #######################################################################
-                    # process memory information
                     real_mem_d = result.get(var_name)
                     print('will write in the datbase table ', var_name)
                     print('host:', host)
@@ -40,17 +44,15 @@ class CallbackModule(CallbackBase):
                     mem_t = int(real_mem_d.get('total'))
                     mem_u = int(real_mem_d.get('used'))
 
-                    h = Host.objects.get(name__exact=host)
-
                     mem_sample = MemUsageSample()
                     mem_sample.host = h
-                    mem_sample.datetime = timezone.now()
+                    mem_sample.datetime = dt
                     mem_sample.percent = 100*float(mem_u)/float(mem_t)
                     mem_sample.save()
 
+                #######################################################################
+                # process disk usage information
                 elif var_name == 'ansible_mounts':
-                    #######################################################################
-                    # process disk usage information
                     mount_l = result.get(var_name)
                     for m in mount_l:
                         partition_name = m.get('mount')
@@ -61,11 +63,9 @@ class CallbackModule(CallbackBase):
                     disk_a = m.get('size_available')
                     disk_u = disk_t - disk_a
 
-                    h = Host.objects.get(name__exact=host)
-
                     disk_sample = FSUsageSample()
                     disk_sample.host = h
-                    disk_sample.datetime = timezone.now()
+                    disk_sample.datetime = dt
                     disk_sample.percent = 100*float(disk_u)/float(disk_t)
                     disk_sample.save()
 
