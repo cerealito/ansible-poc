@@ -50,11 +50,12 @@ loader = DataLoader()
 
 # initial error check, to make sure all specified playbooks are accessible
 # before we start running anything through the playbook executor
-for playbook in ['../playbook.yml']:
-    if not os.path.exists(playbook):
-        raise AnsibleError("the playbook: %s could not be found" % playbook)
-    if not (os.path.isfile(playbook) or stat.S_ISFIFO(os.stat(playbook).st_mode)):
-        raise AnsibleError("the playbook: %s does not appear to be a file" % playbook)
+playbook = './playbook.yml'
+
+if not os.path.exists(playbook):
+    raise AnsibleError("the playbook: %s could not be found" % playbook)
+if not (os.path.isfile(playbook) or stat.S_ISFIFO(os.stat(playbook).st_mode)):
+    raise AnsibleError("the playbook: %s does not appear to be a file" % playbook)
 
 # create the variable manager, which will be shared throughout
 # the code, ensuring a consistent view of global variables
@@ -63,7 +64,9 @@ variable_manager = VariableManager()
 
 
 # create the inventory, and filter it based on the subset specified (if any)
-inventory = Inventory(loader=loader, variable_manager=variable_manager, host_list='../inventory.txt')
+inventory = Inventory(loader=loader,
+                      variable_manager=variable_manager,
+                      host_list='./inventory.txt')
 variable_manager.set_inventory(inventory)
 
 no_hosts = False
@@ -71,18 +74,17 @@ if len(inventory.list_hosts()) == 0:
     # Empty inventory
     print("provided hosts list is empty, only localhost is available")
     no_hosts = True
-inventory.subset(options.subset)
+# inventory.subset(options.subset)
 if len(inventory.list_hosts()) == 0 and no_hosts is False:
     # Invalid limit
     raise AnsibleError("Specified --limit does not match any hosts")
 
-    # create the playbook executor, which manages running the plays via a task queue manager
-pbex = PlaybookExecutor(playbooks=['../playbook.yml'],
+# create the playbook executor, which manages running the plays via a task queue manager
+pbex = PlaybookExecutor(playbooks=[playbook],
                         inventory=inventory,
                         variable_manager=variable_manager,
                         loader=loader,
                         options=options,
                         passwords=passwords)
-
 
 results = pbex.run()
