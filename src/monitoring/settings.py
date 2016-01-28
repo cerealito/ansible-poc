@@ -23,6 +23,7 @@ SECRET_KEY = '1*03k0wlfrfkvxjeb0y1@07ukr&*_r3ri+s^ycao#2ckcrp-v#'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'monitoring/templates')]
 
 ALLOWED_HOSTS = []
 

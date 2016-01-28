@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+
 {% if host_l %}
     <p>click on each host for details</p>
     <ul>
@@ -8,3 +11,5 @@
 {% else %}
     <p>No hosts are available.</p>
 {% endif %}
+
+{% endblock %}
