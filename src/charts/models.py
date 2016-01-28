@@ -20,7 +20,7 @@ class FSUsageSample(models.Model):
 class MemUsageSample(models.Model):
     host = models.ForeignKey(Host)
     datetime = models.DateTimeField('Date and time')
-    percent = models.IntegerField('Percentage of used memory')
+    percent = models.FloatField('Percentage of used memory')
 
     def __unicode__(self):
         return self.host.name + '  ' + unicode(str(self.datetime) + '  ' + str(self.percent))
