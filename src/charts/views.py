@@ -2,6 +2,7 @@ import pygal
 from charts.models import Host, MemUsageSample, FSUsageSample
 from django.http import Http404
 from django.shortcuts import render
+from django.utils.timezone import localtime
 
 
 def index(request):
@@ -40,7 +41,8 @@ def host(request, host_id):
     fs_values = []
     for s in fsu_sample_l:
         assert isinstance(s, FSUsageSample)
-        fs_times.append(s.datetime.__format__('%Y-%m-%d %H:%M:%S'))
+
+        fs_times.append(localtime(s.datetime).__format__('%d/%m %H:%M:%S, %Z'))
         fs_values.append(s.percent)
 
     mem_chart.x_labels = fs_times
