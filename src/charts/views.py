@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'charts/index.html', context)
 
 
-def host_resources(request, host_id):
+def hw_resources(request, host_id):
     if not Host.objects.filter(pk=host_id).count():
         raise Http404
 
