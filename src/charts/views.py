@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'charts/index.html', context)
 
 
-def host(request, host_id):
+def host_resources(request, host_id):
     if not Host.objects.filter(pk=host_id).count():
         raise Http404
 
@@ -47,6 +47,5 @@ def host(request, host_id):
 
     mem_chart.x_labels = fs_times
     mem_chart.add('Disk Usage (%)', fs_values)
-
 
     return render(request, 'charts/graphs.html', {'chart_rendition': mem_chart.render()})
