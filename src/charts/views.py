@@ -19,12 +19,15 @@ def hw_resources(request, host_id):
 
     current_host = Host.objects.filter(pk=host_id)[0]
 
-    # get the last 10 samples, with the most recent at the end
-    mem_sample_l = reversed(MemUsageSample.objects.filter(host_id=host_id).order_by('-id')[:10])
-    fsu_sample_l = reversed(FSUsageSample.objects.filter(host_id=host_id).order_by('-id')[:10])
+    # get the last 60 samples, with the most recent at the end
+    # please note: we are currently launching ansible every minute
+    mem_sample_l = reversed(MemUsageSample.objects.filter(host_id=host_id).order_by('-id')[:60])
+    fsu_sample_l = reversed(FSUsageSample.objects.filter(host_id=host_id).order_by('-id')[:60])
 
-    mem_chart = pygal.Line(title='Hardware resources in ' + current_host.name,
+    mem_chart = pygal.Line(title='Hardware resources in ' + current_host.name + ', last hour',
                            x_label_rotation=30,
+                           x_labels_major_every=10,
+                           show_minor_x_labels=False,
                            range=(0, 100),
                            legend_box_size=20)
     mem_times = []
