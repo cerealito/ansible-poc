@@ -2,7 +2,7 @@
     <p>click on each host for details</p>
     <ul>
     {% for h in host_l %}
-        <li><a href="{% url 'host_url' h.id %}">{{ h.name }}</a></li>
+        <li><a href="{% url 'charts:host_url' h.id %}">{{ h.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
