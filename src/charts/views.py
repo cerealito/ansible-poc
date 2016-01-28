@@ -48,4 +48,4 @@ def host_resources(request, host_id):
     mem_chart.x_labels = fs_times
     mem_chart.add('Disk Usage (%)', fs_values)
 
-    return render(request, 'charts/graphs.html', {'chart_rendition': mem_chart.render()})
+    return render(request, 'charts/graphs.html', {'chart_rendition': mem_chart.render(), 'h': current_host})
