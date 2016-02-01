@@ -11,6 +11,8 @@ if __name__ == '__main__':
     # when in CLI use inspect to locate the source directory
     web_dir = join(dirname(realpath(inspect.getfile(inspect.currentframe()))), 'web_interface')
     sys.path.append(web_dir)
+    ans_dir = join(dirname(realpath(inspect.getfile(inspect.currentframe()))), 'ansible_integration')
+    sys.path.append(ans_dir)
 
 from pbwrapper import PBExecutorWrapper
 
