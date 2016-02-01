@@ -9,8 +9,8 @@ if __name__ == '__main__':
     import inspect
     from os.path import dirname, join, realpath
     # when in CLI use inspect to locate the source directory
-    src_dir = join(dirname(realpath(inspect.getfile(inspect.currentframe()))), 'src')
-    sys.path.append(src_dir)
+    web_dir = join(dirname(realpath(inspect.getfile(inspect.currentframe()))), 'web_interface')
+    sys.path.append(web_dir)
 
 from pbwrapper import PBExecutorWrapper
 
