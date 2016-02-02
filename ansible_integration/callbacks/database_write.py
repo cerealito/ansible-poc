@@ -38,7 +38,7 @@ class CallbackModule(CallbackBase):
                 # process memory information
                 if var_name == 'ansible_memory_mb.real':
                     real_mem_d = result.get(var_name)
-                    print('will write in the datbase table ', var_name)
+                    print('will write in the database table ', var_name)
                     print('host:', host)
 
                     mem_t = real_mem_d.get('total')
