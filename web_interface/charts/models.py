@@ -1,5 +1,7 @@
 from django.db import models
 
+__author__ = 'Samuel FLORES'
+
 
 class Host(models.Model):
     name = models.CharField(max_length=200)

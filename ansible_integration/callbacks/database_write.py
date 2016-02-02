@@ -16,6 +16,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "monitoring.settings")
 # now we can import our django stuff:
 from charts.models import Host, MemUsageSample, FSUsageSample
 
+__author__ = 'Samuel FLORES'
+
 
 class CallbackModule(CallbackBase):
 

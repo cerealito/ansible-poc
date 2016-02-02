@@ -4,6 +4,8 @@ from django.http import Http404
 from django.shortcuts import render
 from django.utils.timezone import localtime
 
+__author__ = 'Samuel FLORES'
+
 
 def index(request):
     all_hosts_l = Host.objects.all()
